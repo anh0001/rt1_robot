@@ -18,8 +18,8 @@
   <depend>tf2_ros</depend>
   <depend>rosrt_rt1</depend>
   <depend>rt1_hardware</depend>
-  <depend>rt1_description</depend>
-  <depend>rt1_navigation</depend>
+  <!-- <depend>rt1_description</depend>
+  <depend>rt1_navigation</depend> -->
 
   <exec_depend>ros2launch</exec_depend>
 

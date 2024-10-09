@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.8)
 project(rt1_bringup)
 
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -12,24 +21,8 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rosrt_rt1 REQUIRED)
 find_package(rt1_hardware REQUIRED)
-find_package(rt1_description REQUIRED)
-find_package(rt1_navigation REQUIRED)
-
-# Declare a C++ executable
-add_executable(rt1_bringup_node src/rt1_bringup_node.cpp)
-ament_target_dependencies(rt1_bringup_node
-  rclcpp
-  std_msgs
-  geometry_msgs
-  sensor_msgs
-  nav_msgs
-  tf2
-  tf2_ros
-  rosrt_rt1
-  rt1_hardware
-  rt1_description
-  rt1_navigation
-)
+# find_package(rt1_description REQUIRED)
+# find_package(rt1_navigation REQUIRED)
 
 # Install launch files
 install(DIRECTORY
@@ -41,12 +34,6 @@ install(DIRECTORY
 install(DIRECTORY
   config
   DESTINATION share/${PROJECT_NAME}/
-)
-
-# Install executables
-install(TARGETS
-  rt1_bringup_node
-  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

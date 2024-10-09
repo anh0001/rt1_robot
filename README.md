@@ -60,7 +60,7 @@ rt1_robot/
 
 6. Source the workspace:
    ```bash
-   source ~/rt1_ws/install/setup.bash
+   source install/setup.bash
    ```
 
 ## Usage
