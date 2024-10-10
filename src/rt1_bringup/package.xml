@@ -3,13 +3,14 @@
 <package format="3">
   <name>rt1_bringup</name>
   <version>0.0.1</version>
-  <description>Launch and configuration package for RT1 robot</description>
-  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <description>Bringup package for RT1 robot</description>
+  <maintainer email="anhrisn@gmail.com">Anhar Risnumawan</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
+  <depend>rclpy</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
@@ -18,11 +19,6 @@
   <depend>tf2_ros</depend>
   <depend>rosrt_rt1</depend>
   <depend>rt1_hardware</depend>
-  <!-- <depend>rt1_description</depend>
-  <depend>rt1_navigation</depend> -->
-
-  <exec_depend>ros2launch</exec_depend>
-  <exec_depend>rclpy</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

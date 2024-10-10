@@ -19,6 +19,7 @@ def generate_launch_description():
     
     # Extract remappings from the YAML file
     remappings = params.get('remappings', [])
+    remappings_tuple = [(remap['from'], remap['to']) for remap in remappings]
     
     return LaunchDescription([
         # Declare a launch argument for the params file
@@ -33,7 +34,7 @@ def generate_launch_description():
             executable='rosrt_rt1_node',
             name='rosrt_rt1',
             parameters=[LaunchConfiguration('params_file')],
-            remappings=remappings
+            remappings=remappings_tuple
         ),
         # Other nodes...
     ])
