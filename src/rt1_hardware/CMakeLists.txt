@@ -29,9 +29,18 @@ ament_target_dependencies(rt1_hardware_interface
   rosrt_rt1
 )
 
+# Declare the test_serial_comm executable
+add_executable(test_serial_comm test/test_serial_comm.cpp)
+ament_target_dependencies(test_serial_comm
+  rclcpp
+  geometry_msgs
+  rosrt_rt1
+)
+
 # Install executables
 install(TARGETS
   rt1_hardware_interface
+  test_serial_comm
   DESTINATION lib/${PROJECT_NAME}
 )
 
