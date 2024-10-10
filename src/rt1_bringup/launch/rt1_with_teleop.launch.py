@@ -14,7 +14,7 @@ def generate_launch_description():
         # Launch the teleop node
         Node(
             package='rt1_bringup',
-            executable='teleop_keyboard',
+            executable='teleop_keyboard.py',
             name='teleop_keyboard',
             output='screen',
             prefix = 'xterm -e',
