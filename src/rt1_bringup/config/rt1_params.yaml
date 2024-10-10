@@ -1,3 +1,6 @@
 rosrt_rt1:
   ros__parameters:
     port: /dev/ttyUSB0
+  remappings:
+    - from: /cmd_vel
+      to: /rt1/cmd_vel
