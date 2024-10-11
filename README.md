@@ -30,35 +30,23 @@ rt1_robot/
 
 ## Setup Instructions
 
-1. Create a ROS 2 workspace:
-   ```bash
-   mkdir -p ~/rt1_ws/src
-   cd ~/rt1_ws/src
-   ```
-
-2. Clone the repository:
+1. Clone the repository:
    ```bash
    git clone https://github.com/your_username/rt1_robot.git
    cd rt1_robot
    ```
 
-3. Initialize and update submodules:
+1. Initialize and update submodules:
    ```bash
    git submodule update --init --recursive
    ```
 
-4. Install dependencies:
-   ```bash
-   cd ~/rt1_ws
-   rosdep install --from-paths src --ignore-src -r -y
-   ```
-
-5. Build the workspace:
+1. Build the workspace:
    ```bash
    colcon build
    ```
 
-6. Source the workspace:
+1. Source the workspace:
    ```bash
    source install/setup.bash
    ```
