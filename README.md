@@ -96,14 +96,6 @@ To use the Dockerized development environment:
    docker run -it --rm --net=host rt1_robot_dev
    ```
 
-## Contributing
-
-We welcome contributions to the RT1 Robot project. Please read our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## Support
 
 For support, please open an issue in the GitHub repository or contact the maintainers directly.
@@ -112,3 +104,10 @@ For support, please open an issue in the GitHub repository or contact the mainta
 
 - RT.Works for the RT1 robotic platform
 - The ROS 2 community for their invaluable resources and support
+
+## Troubleshootings:
+
+- If error failed to open /dev/ttyUSB0
+   ```bash
+   sudo chmod 666 /dev/ttyUSB0
+   ```
