@@ -71,6 +71,11 @@ To launch the RT1 robot with basic functionality:
 ros2 launch rt1_bringup rt1_bringup.launch.py
 ```
 
+TO launch the RT1 robot with teleop manual control
+```bash
+ros2 launch rt1_bringup rt1_with_teleop.launch.py
+```
+
 For navigation:
 
 ```bash
