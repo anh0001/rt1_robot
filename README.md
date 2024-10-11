@@ -32,7 +32,7 @@ rt1_robot/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your_username/rt1_robot.git
+   git clone https://github.com/anh0001/rt1_robot.git
    cd rt1_robot
    ```
 
@@ -83,10 +83,6 @@ To use the Dockerized development environment:
    ```bash
    docker run -it --rm --net=host rt1_robot_dev
    ```
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the maintainers directly.
 
 ## Acknowledgements
 
