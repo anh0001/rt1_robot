@@ -70,20 +70,6 @@ For navigation:
 ros2 launch rt1_navigation navigation.launch.py
 ```
 
-## Docker
-
-To use the Dockerized development environment:
-
-1. Build the Docker image:
-   ```bash
-   docker build -t rt1_robot_dev ./docker
-   ```
-
-2. Run the Docker container:
-   ```bash
-   docker run -it --rm --net=host rt1_robot_dev
-   ```
-
 ## Support
 
 For support, please open an issue in the GitHub repository or contact the maintainers directly.
