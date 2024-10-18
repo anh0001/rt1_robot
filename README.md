@@ -32,7 +32,7 @@ rt1_robot/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your_username/rt1_robot.git
+   git clone https://github.com/anh0001/rt1_robot.git
    cd rt1_robot
    ```
 
@@ -69,6 +69,20 @@ For navigation:
 ```bash
 ros2 launch rt1_navigation navigation.launch.py
 ```
+
+## Docker
+
+To use the Dockerized development environment:
+
+1. Build the Docker image:
+   ```bash
+   docker build -t rt1_robot_dev ./docker
+   ```
+
+2. Run the Docker container:
+   ```bash
+   docker run -it --rm --net=host rt1_robot_dev
+   ```
 
 ## Support
 
