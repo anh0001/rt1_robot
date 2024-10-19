@@ -1,0 +1,3 @@
+[submodule "src/rosrt_rt1"]
+	path = src/rosrt_rt1
+	url = https://github.com/anh0001/rosrt_rt1.git
