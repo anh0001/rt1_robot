@@ -59,7 +59,12 @@ To launch the RT1 robot with basic functionality:
 ros2 launch rt1_bringup rt1_bringup.launch.py
 ```
 
-TO launch the RT1 robot with teleop manual control
+To send sensors data through MQTT
+```bash
+ros2 launch rt1_bringup rt1_mqtt_bridge.launch.py
+```
+
+To launch the RT1 robot with teleop manual control
 ```bash
 ros2 launch rt1_bringup rt1_with_teleop.launch.py
 ```

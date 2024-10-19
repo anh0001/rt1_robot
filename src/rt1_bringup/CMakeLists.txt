@@ -17,6 +17,7 @@ find_package(rt1_hardware REQUIRED)
 # Install Python scripts
 install(PROGRAMS
   scripts/teleop_keyboard.py
+  scripts/mqtt_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

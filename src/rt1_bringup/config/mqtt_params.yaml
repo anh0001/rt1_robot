@@ -1,25 +1,95 @@
+# MQTT Client Configuration for ROS 2 with EMQX Broker
+
 mqtt_client:
   ros__parameters:
+    # Broker configuration
     broker:
-      host: "10.0.1.137"
+      # The hostname or IP address of your EMQX broker
+      host: "100.114.57.67"
+      # The port your EMQX broker is listening on (default is 1883 for MQTT, 8883 for MQTT over TLS)
       port: 1883
+      # Username for authentication (if enabled in EMQX)
+      # user: "admin"
+      # Password for authentication (if enabled in EMQX)
+      # pass: "mobimobi01"
+      
+      # TLS/SSL configuration
       tls:
+        # Set to true if you're using TLS/SSL
         enabled: false
+        # Path to the CA certificate file (needed if using TLS)
+        # ca_certificate: "/path/to/ca_certificate.pem"
+        # Path to the client certificate file (if using client certificates)
+        # certificate: "/path/to/client_certificate.pem"
+        # Path to the client private key file (if using client certificates)
+        # key: "/path/to/client_key.pem"
+        # Password for the client private key (if the key is password-protected)
+        # key_password: "your_key_password"
+
+    # Client configuration
     client:
-      id: "rt1_mqtt_client"
+      # A unique identifier for this client (must be unique for each connection to EMQX)
+      id: "ros2_mqtt_client"
+      # Whether to start a clean session (true) or resume a previous session (false)
       clean_session: true
+      # Keep-alive interval in seconds
       keep_alive_interval: 60.0
+      # Maximum number of in-flight messages
       max_inflight: 65535
+      
+      # Client-side message buffering (optional)
+      buffer:
+        # Maximum number of messages to buffer when offline (0 disables buffering)
+        size: 0
+        # Directory to store buffered messages (relative to ROS_HOME)
+        # directory: "buffer"
+
+      # Last Will and Testament configuration (optional)
+      # last_will:
+      #   topic: "last_will_topic"
+      #   message: "Client disconnected"
+      #   qos: 1
+      #   retained: false
+
+    # Bridge configuration
     bridge:
+      # ROS to MQTT bridge configuration
       ros2mqtt:
+        # List of ROS topics to bridge to MQTT
         ros_topics: 
           - "/rosrt_rt1"
+        # Configuration for each ROS topic
         "/rosrt_rt1":
-          mqtt_topic: "/rt1"
+          # The MQTT topic to publish to
+          mqtt_topic: "rt1/sensor"
+          # The ROS message type (use the full name including package)
           ros_type: "rosrt_rt1/msg/Rt1Sensor"
+          # Whether to inject a timestamp for latency calculation
           inject_timestamp: true
+          # Advanced settings
           advanced:
+            # ROS subscriber settings
             ros:
+              # Queue size for the ROS subscriber
               queue_size: 10
+            # MQTT publisher settings
             mqtt:
+              # Quality of Service level (0, 1, or 2)
               qos: 1
+              # Whether to set the retained flag on MQTT messages
+              retained: false
+
+      # MQTT to ROS bridge configuration (if needed)
+      # mqtt2ros:
+      #   mqtt_topics:
+      #     - "incoming/topic"
+      #   "incoming/topic":
+      #     ros_topic: "/incoming_ros_topic"
+      #     ros_type: "std_msgs/msg/String"
+      #     primitive: false
+      #     advanced:
+      #       mqtt:
+      #         qos: 1
+      #       ros:
+      #         queue_size: 10
+      #         latched: false
