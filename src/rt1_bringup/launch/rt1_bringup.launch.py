@@ -29,12 +29,22 @@ def generate_launch_description():
             description='Full path to the ROS2 parameters file to use'
         ),
         
+        # Declare a launch argument for the mode
+        DeclareLaunchArgument(
+            'mode',
+            default_value='sensor',
+            description='Operation mode: "teleop" or "sensor"'
+        ),
+        
         Node(
             package='rosrt_rt1',
             executable='rosrt_rt1_node',
             name='rosrt_rt1',
-            parameters=[LaunchConfiguration('params_file')],
-            remappings=remappings_tuple
+            parameters=[
+                LaunchConfiguration('params_file'),
+                {'mode': LaunchConfiguration('mode')}
+            ],
+            remappings=remappings_tuple,
         ),
         # Other nodes...
     ])

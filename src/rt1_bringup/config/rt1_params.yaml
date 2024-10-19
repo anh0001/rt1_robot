@@ -1,5 +1,6 @@
 rosrt_rt1:
   ros__parameters:
     port: /dev/ttyUSB0
+    mode: sensor
     remappings:
       /cmd_vel: /rt1/cmd_vel
