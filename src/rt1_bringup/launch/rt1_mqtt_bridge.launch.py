@@ -10,7 +10,7 @@ def generate_launch_description():
             name='mqtt_publisher',
             output='screen',
             parameters=[
-                {'mqtt_broker_host': '100.114.57.67'},
+                {'mqtt_broker_host': '10.0.1.137'},
                 {'mqtt_broker_port': 1883},
                 {'mqtt_topic': 'rt1/sensors'},
                 {'ros_topic': '/rosrt_rt1'},
