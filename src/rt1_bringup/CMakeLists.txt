@@ -13,6 +13,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rosrt_rt1 REQUIRED)
 find_package(rt1_hardware REQUIRED)
+find_package(rt1_drivers REQUIRED)
 
 # Install Python scripts
 install(PROGRAMS

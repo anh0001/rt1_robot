@@ -1,7 +1,8 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 import os
 import yaml
@@ -20,7 +21,10 @@ def generate_launch_description():
     # Extract remappings from the YAML file
     remappings = params.get('remappings', [])
     remappings_tuple = [(remap['from'], remap['to']) for remap in remappings]
-    
+
+    # Get the path to the urg_node2 package
+    urg_node2_dir = get_package_share_directory('urg_node2')
+
     return LaunchDescription([
         # Declare a launch argument for the params file
         DeclareLaunchArgument(
@@ -46,5 +50,24 @@ def generate_launch_description():
             ],
             remappings=remappings_tuple,
         ),
-        # Other nodes...
+        
+        # Include the Hokuyo URG launch file
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([os.path.join(
+                urg_node2_dir, 'launch', 'urg_node2.launch.py'
+            )]),
+            launch_arguments={
+                'auto_start': 'true',
+                'node_name': 'hokuyo_node',
+                'scan_topic_name': 'scan'
+            }.items()
+        ),
+
+        # Add static transform publisher for laser
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='laser_broadcaster',
+            arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'laser']
+        )
     ])
