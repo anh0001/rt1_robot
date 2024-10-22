@@ -104,3 +104,8 @@ For support, please open an issue in the GitHub repository or contact the mainta
    ```bash
    sudo chmod 666 /dev/ttyUSB0
    ```
+
+- If error failed to open /dev/ttyACM0
+   ```bash
+   sudo chmod 666 /dev/ttyACM0
+   ```
