@@ -1,3 +1,6 @@
 [submodule "src/rosrt_rt1"]
 	path = src/rosrt_rt1
 	url = https://github.com/anh0001/rosrt_rt1.git
+[submodule "src/urg_node2"]
+	path = src/urg_node2
+	url = https://github.com/anh0001/urg_node2.git
