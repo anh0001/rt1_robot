@@ -23,6 +23,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(
   PROGRAMS
     hokuyo_driver/hokuyo_node.py
+    scripts/setup_hokuyo.sh
   DESTINATION lib/${PROJECT_NAME}
 )
 
