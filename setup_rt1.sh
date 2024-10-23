@@ -3,6 +3,9 @@
 
    # Setup script for RT1 Robot
 
+   # Run RT1 serial setup script
+   ./src/rt1_drivers/scripts/setup_rt1_serial.sh
+
    # Run Hokuyo setup script
    ./src/rt1_drivers/scripts/setup_hokuyo.sh
 

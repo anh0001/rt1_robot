@@ -100,8 +100,9 @@ ros2 launch rt1_navigation navigation.launch.py
   2. Check if the udev rule is set up correctly
   3. Verify that the LiDAR is connected and recognized at `/dev/hokuyo`
 
-  You can re-run the Hokuyo setup script at any time:
+  You can re-run the RT1 Serial and Hokuyo setup script at any time:
   ```bash
+  ./src/rt1_drivers/scripts/setup_rt1_serial.sh
   ./src/rt1_drivers/scripts/setup_hokuyo.sh
   ```
 
