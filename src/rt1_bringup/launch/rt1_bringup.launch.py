@@ -59,13 +59,13 @@ def generate_launch_description():
             remappings=remappings_tuple,
         ),
         
-        # Robot state publisher
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{'robot_description': Command(['xacro ', urdf_file])}]
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                os.path.join(get_package_share_directory('rt1_description'),
+                            'launch',
+                            'rt1_description.launch.py')
+            ]),
+            launch_arguments={'gui': 'false'}.items()  # Disable GUI by default
         ),
         
         # Include the Hokuyo URG launch file
@@ -89,12 +89,21 @@ def generate_launch_description():
         #     arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'laser']
         # ),
         
-        # Launch slam_toolbox node
-        Node(
-            package='slam_toolbox',
-            executable='sync_slam_toolbox_node',
-            name='slam_toolbox',
-            output='screen',
-            parameters=[slam_params_file],
-        )
+        # # Launch slam_toolbox node
+        # Node(
+        #     package='slam_toolbox',
+        #     executable='sync_slam_toolbox_node',
+        #     name='slam_toolbox',
+        #     output='screen',
+        #     parameters=[slam_params_file],
+        # )
+
+        # # Add this to your rt1_bringup.launch.py
+        # Node(
+        #     package='rviz2',
+        #     executable='rviz2',
+        #     name='rviz2',
+        #     arguments=['-d', os.path.join(get_package_share_directory('rt1_description'), 'rviz', 'rt1_visualization.rviz')],
+        #     output='screen'
+        # )
     ])
