@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<robot  xmlns:xacro="http://ros.org/wiki/xacro" name="rt1" >
+
+    <xacro:include filename="$(find rt1_description)/urdf/caster.urdf.xacro" />
+    <xacro:include filename="$(find rt1_description)/urdf/wheel.urdf.xacro" />
+    <xacro:include filename="$(find rt1_description)/urdf/materials.urdf.xacro" />
+    <xacro:include filename="$(find rt1_description)/urdf/d435.urdf.xacro" />
+
+    <xacro:arg name="mesh_enabled" default="true" />
+    <xacro:arg name="robot_namespace" default=""/>
+
+    <link   name = "base_link">
+        <!-- <inertial>
+            <origin xyz="0.3 0 0.0" rpy="0 0 0" />
+            <mass value="15" />
+            <inertia ixx="1.0"  ixy="0.0"   ixz="0.0"
+                                iyy="1.0"   iyz="0.0"
+                                            izz="1.0" />
+        </inertial> -->
+        <inertial>
+            <origin xyz="0.21808388 0.00000000 0.32343770"/>
+            <mass value="13.00000000"/>
+            <inertia ixx="0.93321171" ixy="-0.00000000" ixz="0.11303755" iyy="0.95778312" iyz="0.00000000" izz="0.44638636"/>
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0.0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://rt1_description/meshes/rt1.dae" />
+                
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.4 0 0.0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.60 0.47 0.1" />
+            </geometry>
+            <material name="Blue" />
+        </collision>
+    </link>
+
+    <link   name = "base_footprint"/>
+
+    <joint name = "base_joint"  type = "fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0.0 0.0 0.09" rpy="0 0 0" />
+        <axis xyz="0 1 0" rpy="0 0 0" />
+    </joint>
+
+    <xacro:wheel wheel_prefix="left" parent_link="base_link" >
+        <origin xyz="0.0 0.2095 0.0" rpy="0 0 0" />
+    </xacro:wheel>
+
+    <xacro:wheel wheel_prefix="right" parent_link="base_link" >
+        <origin xyz="0.0 -0.2095 0.0" rpy="0 0 0" /> 
+        <!-- 2065 -->
+    </xacro:wheel>
+
+    <xacro:caster caster_prefix="castL" parent_link="base_link" >
+        <origin xyz="0.425 0.125 0.11" rpy="0 0 0" /> 
+        <!-- 125 110 -->
+    </xacro:caster>
+
+    <xacro:caster caster_prefix="castR" parent_link="base_link" >
+        <origin xyz="0.425 -0.125 0.11" rpy="0 0 0" /> 
+        <!-- 125 110 -->
+    </xacro:caster>
+
+    <xacro:sensor_d435 name="camera"  parent="base_link" >
+        <origin xyz="0.1 0.0 0.45" rpy="0 0 0" />
+    </xacro:sensor_d435>
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>$(arg robot_namespace)</robotNamespace>
+        <legacyModeNS>true</legacyModeNS>
+        </plugin>
+    </gazebo>
+
+    <link name="hokuyo_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <mesh filename="package://rt1_description/meshes/hokuyo.dae" />
+        </geometry>
+            <material name="Blue" />
+        </visual>
+    </link>
+    <joint name="hokuyo_joint" type="fixed">
+        <origin xyz="0.4 0 0.2" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="hokuyo_link" />
+    </joint>
+
+    <gazebo reference="hokuyo_link">
+        <material>Gazebo/Blue</material>
+        <turnGravityOff>false</turnGravityOff>
+        <sensor type="ray" name="head_hokuyo_sensor">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>40</update_rate>
+        <ray>
+            <scan>
+                <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-1.570796</min_angle>
+                <max_angle>1.570796</max_angle>
+                </horizontal>
+            </scan>
+            <range>
+                <min>0.10</min>
+                <max>10.0</max>
+                <resolution>0.001</resolution>
+            </range>
+        </ray>
+            <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+                <topicName>/scan</topicName>
+                <frameName>hokuyo_link</frameName>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+</robot>

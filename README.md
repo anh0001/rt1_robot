@@ -47,7 +47,7 @@ rt1_robot/
    ./setup_rt1.sh
    ```
    This script will:
-   - Set up the Hokuyo LiDAR (add user to dialout group, create udev rule)
+   - Set up the RT1 and Hokuyo LiDAR Serial Comms (add user to dialout group, create udev rule)
    - Build the workspace
    - Source the setup files
 
