@@ -22,7 +22,6 @@
   <depend>rt1_drivers</depend>
   <depend>urg_node2</depend>
   <depend>rt1_description</depend>
-  <depend>gazebo_ros</depend>
   <depend>gazebo_ros2_control</depend>
   <depend>slam_toolbox</depend>
   <depend>rviz2</depend>

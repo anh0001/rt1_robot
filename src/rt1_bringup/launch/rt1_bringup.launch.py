@@ -103,13 +103,13 @@ def generate_launch_description():
     # Simulation specific nodes
     sim_group = GroupAction(
         actions=[
-            # Gazebo simulation
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([
-                    os.path.join(get_package_share_directory('gazebo_ros'), 
-                               'launch', 'gazebo.launch.py')
-                ])
-            ),
+            # # Gazebo simulation
+            # IncludeLaunchDescription(
+            #     PythonLaunchDescriptionSource([
+            #         os.path.join(get_package_share_directory('gazebo_ros'), 
+            #                    'launch', 'gazebo.launch.py')
+            #     ])
+            # ),
             
             # Spawn robot in Gazebo
             Node(
