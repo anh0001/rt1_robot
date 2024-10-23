@@ -98,12 +98,12 @@ def generate_launch_description():
         #     parameters=[slam_params_file],
         # )
 
-        # # Add this to your rt1_bringup.launch.py
-        # Node(
-        #     package='rviz2',
-        #     executable='rviz2',
-        #     name='rviz2',
-        #     arguments=['-d', os.path.join(get_package_share_directory('rt1_description'), 'rviz', 'rt1_visualization.rviz')],
-        #     output='screen'
-        # )
+        # Add this to your rt1_bringup.launch.py
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', os.path.join(get_package_share_directory('rt1_description'), 'rviz', 'rt1_visualization.rviz')],
+            output='screen'
+        )
     ])
