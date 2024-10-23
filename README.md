@@ -85,16 +85,6 @@ ros2 launch rt1_navigation navigation.launch.py
 
 ## Troubleshooting
 
-- If you encounter "failed to open /dev/ttyUSB0" error:
-   ```bash
-   sudo chmod 666 /dev/ttyUSB0
-   ```
-
-- If you encounter "failed to open /dev/ttyACM0" error:
-   ```bash
-   sudo chmod 666 /dev/ttyACM0
-   ```
-
 - If you have issues with the Hokuyo LiDAR:
   1. Ensure your user is in the `dialout` group
   2. Check if the udev rule is set up correctly
