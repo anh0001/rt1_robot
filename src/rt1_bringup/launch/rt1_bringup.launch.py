@@ -77,7 +77,7 @@ def generate_launch_description():
                 'auto_start': 'true',
                 'node_name': 'hokuyo_node',
                 'scan_topic_name': 'scan',
-                'frame_id': 'laser'  # Ensure this matches your URDF
+                'frame_id': 'hokuyo_link'  # Ensure this matches your URDF
             }.items()
         ),
 
