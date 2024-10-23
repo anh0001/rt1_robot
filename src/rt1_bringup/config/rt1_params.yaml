@@ -1,6 +1,49 @@
-rosrt_rt1:
+/**:
   ros__parameters:
-    port: /dev/rt1
-    mode: sensor
+    # Launch configuration
+    launch_config:
+      use_sim: false
+      use_rviz: true
+      use_slam: true
+      mode: "sensor"  # "sensor" or "teleop"
+      
+    # Hardware configuration
+    hardware:
+      real_robot:
+        port: "/dev/rt1"
+        baud_rate: 115200
+        timeout_ms: 1000
+      
+      lidar:
+        port: "/dev/hokuyo"
+        baud_rate: 115200
+        frame_id: "hokuyo_link"
+        topic: "scan"
+        angle_min: -1.5708
+        angle_max: 1.5708
+    
+    # Robot parameters
+    robot:
+      base_frame: "base_link"
+      wheel_separation: 0.419
+      wheel_radius: 0.09
+      
+    # Controller configuration
+    controllers:
+      update_rate: 50
+      diff_drive:
+        left_wheel_names: ["left_wheel_joint"]
+        right_wheel_names: ["right_wheel_joint"]
+        publish_rate: 50.0
+        
+    # Topic remappings
     remappings:
-      /cmd_vel: /rt1/cmd_vel
+      - from: "/cmd_vel"
+        to: "/rt1/cmd_vel"
+      - from: "/odom"
+        to: "/rt1/odom"
+      
+    # Path configurations
+    paths:
+      rviz_config: "rt1_visualization.rviz"
+      slam_params: "slam_toolbox_params.yaml"
