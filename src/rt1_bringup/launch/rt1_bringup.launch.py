@@ -18,6 +18,8 @@ def generate_launch_description():
     # Get package directories
     bringup_dir = get_package_share_directory('rt1_bringup')
     description_dir = get_package_share_directory('rt1_description')
+    # Get the path to the urg_node2 package
+    urg_node2_dir = get_package_share_directory('urg_node2')
     
     # Load the main parameters file
     params_file = os.path.join(bringup_dir, 'config', 'rt1_params.yaml')
@@ -26,6 +28,10 @@ def generate_launch_description():
     
     # Extract launch configurations from YAML
     launch_config = params['/**']['ros__parameters']['launch_config']
+    lidar_params = params['/**']['ros__parameters']['hardware']['lidar']
+    
+    # Convert all values to strings for launch arguments
+    lidar_launch_args = {k: str(v) for k, v in lidar_params.items()}
     
     # Declare launch arguments with defaults from YAML
     declared_arguments = [
@@ -62,10 +68,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([
             os.path.join(description_dir, 'launch', 'rt1_description.launch.py')
         ]),
-        launch_arguments={
-            'use_sim': LaunchConfiguration('use_sim'),
-            'gui': 'false'
-        }.items()
+        launch_arguments={'gui': 'false'}.items()
     )
 
     # Real hardware specific nodes
@@ -77,25 +80,22 @@ def generate_launch_description():
                 executable='rosrt_rt1_node',
                 name='rosrt_rt1',
                 output='screen',
-                parameters=[params_file],
+                parameters=[{
+                    'port': params['/**']['ros__parameters']['hardware']['real_robot']['port'],
+                    'mode': LaunchConfiguration('mode')
+                }],
                 remappings=[(remap['from'], remap['to']) 
                            for remap in params['/**']['ros__parameters']['remappings']]
             ),
             
-            # URG LiDAR Node
-            Node(
-                package='urg_node2',
-                executable='urg_node2_node',
-                name='urg_node2',
-                parameters=[{
-                    'serial_port': params['/**']['ros__parameters']['hardware']['lidar']['port'],
-                    'serial_baud': params['/**']['ros__parameters']['hardware']['lidar']['baud_rate'],
-                    'frame_id': params['/**']['ros__parameters']['hardware']['lidar']['frame_id'],
-                    'angle_min': params['/**']['ros__parameters']['hardware']['lidar']['angle_min'],
-                    'angle_max': params['/**']['ros__parameters']['hardware']['lidar']['angle_max'],
-                    'scan_topic': params['/**']['ros__parameters']['hardware']['lidar']['topic']
-                }]
+            # URG Node 2 launch for Hokuyo 2D Lidar
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    urg_node2_dir, 'launch', 'rt1_urg_node2.launch.py'
+                )]),
+                launch_arguments=lidar_launch_args.items()
             )
+
         ],
         condition=UnlessCondition(LaunchConfiguration('use_sim'))
     )
@@ -118,6 +118,20 @@ def generate_launch_description():
                 name='spawn_entity',
                 arguments=['-entity', 'rt1', '-topic', 'robot_description'],
                 output='screen'
+            ),
+            
+            # Controller spawner nodes
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=['joint_state_broadcaster'],
+                output='screen',
+            ),
+            Node(
+                package='controller_manager',
+                executable='spawner',
+                arguments=['diff_drive_controller'],
+                output='screen',
             )
         ],
         condition=IfCondition(LaunchConfiguration('use_sim'))
@@ -147,24 +161,6 @@ def generate_launch_description():
             )
         ]
     )
-    
-    # Controller spawner nodes
-    controller_group = GroupAction(
-        actions=[
-            Node(
-                package='controller_manager',
-                executable='spawner',
-                arguments=['joint_state_broadcaster'],
-                output='screen',
-            ),
-            Node(
-                package='controller_manager',
-                executable='spawner',
-                arguments=['diff_drive_controller'],
-                output='screen',
-            )
-        ]
-    )
 
     # Create and return launch description
     ld = LaunchDescription(declared_arguments)
@@ -172,8 +168,7 @@ def generate_launch_description():
     # Add all node groups
     ld.add_action(description_launch)
     ld.add_action(real_hardware_group)
-    ld.add_action(sim_group)
+    ld.add_action(sim_group)  # Restored simulation group
     ld.add_action(common_group)
-    ld.add_action(controller_group)
     
     return ld
