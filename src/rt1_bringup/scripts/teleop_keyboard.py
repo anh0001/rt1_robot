@@ -30,11 +30,18 @@ class TeleopKeyboard(Node):
 
     def __init__(self):
         super().__init__('teleop_keyboard')
-        self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
+        
+        # Declare and get the cmd_vel_topic parameter
+        self.declare_parameter('cmd_vel_topic', 'cmd_vel')
+        cmd_vel_topic = self.get_parameter('cmd_vel_topic').value
+        
+        self.publisher = self.create_publisher(Twist, cmd_vel_topic, 10)
         self.linear_speed = 0.5
         self.angular_speed = 1.0
         self.x = 0.0
         self.th = 0.0
+        
+        self.get_logger().info(f'Publishing to {cmd_vel_topic}')
 
     def getKey(self):
         tty.setraw(sys.stdin.fileno())
