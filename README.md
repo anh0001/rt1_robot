@@ -55,6 +55,14 @@ rt1_robot/
 
 ## Usage
 
+To launch floxglove bridge:
+
+```bash
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+```
+
+Import the foxglove panels.
+
 To launch the RT1 robot with basic functionality:
 
 ```bash

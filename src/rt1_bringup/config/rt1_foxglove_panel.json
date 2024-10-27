@@ -1,0 +1,338 @@
+{
+  "configById": {
+    "3D!1glfyjj": {
+      "cameraState": {
+        "perspective": true,
+        "distance": 5.8397804867746785,
+        "phi": 158.8,
+        "thetaOffset": 3.1,
+        "targetOffset": [
+          0.24549842403635536,
+          -0.5034979888232183,
+          -3.941226369600531e-17
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 28.7,
+        "near": 0.5,
+        "far": 5000
+      },
+      "followMode": "follow-pose",
+      "scene": {
+        "syncCamera": false,
+        "transforms": {
+          "showLabel": false,
+          "enablePreloading": false,
+          "editable": false
+        },
+        "enableStats": false
+      },
+      "transforms": {
+        "frame:base_link": {
+          "visible": false
+        },
+        "frame:castL_caster_base": {
+          "visible": false
+        },
+        "frame:castL_caster_link": {
+          "visible": false
+        },
+        "frame:castR_caster_base": {
+          "visible": false
+        },
+        "frame:castR_caster_link": {
+          "visible": false
+        },
+        "frame:hokuyo_link": {
+          "visible": false
+        },
+        "frame:left_wheel_link": {
+          "visible": false
+        },
+        "frame:right_wheel_link": {
+          "visible": false
+        }
+      },
+      "topics": {
+        "/robot_description": {
+          "visible": true,
+          "displayMode": "auto"
+        },
+        "/initialpose": {
+          "visible": false
+        },
+        "/move_base_simple/goal": {
+          "visible": false
+        }
+      },
+      "layers": {
+        "grid": {
+          "visible": false,
+          "frameLocked": true,
+          "label": "Grid",
+          "instanceId": "4deb2145-6680-4255-b6d8-ddd6bccfd78d",
+          "layerId": "foxglove.Grid",
+          "size": 10,
+          "divisions": 10,
+          "lineWidth": 1,
+          "color": "#248eff",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "publish": {
+        "type": "point",
+        "poseTopic": "/move_base_simple/goal",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {}
+    },
+    "Plot!3qro6c6": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.velocity.linear.x",
+          "enabled": true,
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.velocity.linear.y",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.velocity.linear.z",
+          "enabled": true,
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Velocity Linear"
+    },
+    "Plot!wm1rbu": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.velocity.angular.x",
+          "enabled": true,
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.velocity.angular.y",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.velocity.angular.z",
+          "enabled": true,
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Velocity Angular"
+    },
+    "Plot!tdwwec": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.accel.linear.x",
+          "enabled": true,
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.accel.linear.y",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.accel.linear.z",
+          "enabled": true,
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Acceleration Linear"
+    },
+    "Plot!4k1stu8": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.accel.angular.x",
+          "enabled": true,
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.accel.angular.y",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.accel.angular.z",
+          "enabled": true,
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Acceleration Angular"
+    },
+    "Plot!4dlx632": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.handle.force.x",
+          "enabled": true,
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.handle.force.y",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.handle.force.z",
+          "enabled": true,
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Handle Force"
+    },
+    "Plot!in18if": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.handle.torque.x",
+          "enabled": true,
+          "color": "#4e98e2"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.handle.torque.y",
+          "enabled": true,
+          "color": "#f5774d"
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/rosrt_rt1.handle.torque.z",
+          "enabled": true,
+          "color": "#f7df71"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Handle Torque"
+    },
+    "Tab!2g4o7eb": {
+      "activeTabIdx": 0,
+      "tabs": [
+        {
+          "title": "RT1 Sensors",
+          "layout": {
+            "first": "3D!1glfyjj",
+            "second": {
+              "first": {
+                "first": "Plot!3qro6c6",
+                "second": "Plot!wm1rbu",
+                "direction": "row"
+              },
+              "second": {
+                "first": {
+                  "first": "Plot!tdwwec",
+                  "second": "Plot!4k1stu8",
+                  "direction": "row"
+                },
+                "second": {
+                  "first": "Plot!4dlx632",
+                  "second": "Plot!in18if",
+                  "direction": "row"
+                },
+                "direction": "column"
+              },
+              "direction": "column",
+              "splitPercentage": 34.07035175879397
+            },
+            "direction": "row"
+          }
+        }
+      ]
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": "Tab!2g4o7eb"
+}
