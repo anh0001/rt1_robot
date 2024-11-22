@@ -23,6 +23,13 @@
         scan_topic_name: "scan"
         angle_min: -3.14
         angle_max: 3.14
+
+      # Added: Odometry configuration
+      odometry:
+        publish_rate: 100.0
+        base_frame: "base_link"
+        odom_frame: "odom"
+        use_tf: true
     
     # Robot parameters
     robot:
@@ -44,6 +51,13 @@
         to: "/rt1/cmd_vel"
       - from: "/odom"
         to: "/rt1/odom"
+      # Added: Odometry remappings
+      - from: "rt1/accel"
+        to: "robot/accel"
+      - from: "rt1/wrench"
+        to: "robot/wrench"
+      - from: "rt1/velocity"
+        to: "robot/velocity"
       
     # Path configurations
     paths:

@@ -18,7 +18,6 @@ def generate_launch_description():
     # Get package directories
     bringup_dir = get_package_share_directory('rt1_bringup')
     description_dir = get_package_share_directory('rt1_description')
-    # Get the path to the urg_node2 package
     urg_node2_dir = get_package_share_directory('urg_node2')
     
     # Load the main parameters file
@@ -26,14 +25,15 @@ def generate_launch_description():
     with open(params_file, 'r') as f:
         params = yaml.safe_load(f)
     
-    # Extract launch configurations from YAML
+    # Extract configurations from YAML
     launch_config = params['/**']['ros__parameters']['launch_config']
     lidar_params = params['/**']['ros__parameters']['hardware']['lidar']
+    odom_params = params['/**']['ros__parameters']['hardware']['odometry']
     
-    # Convert all values to strings for launch arguments
+    # Convert values to strings for launch arguments
     lidar_launch_args = {k: str(v) for k, v in lidar_params.items()}
     
-    # Declare launch arguments with defaults from YAML
+    # Declare launch arguments
     declared_arguments = [
         DeclareLaunchArgument(
             'use_sim',
@@ -94,8 +94,18 @@ def generate_launch_description():
                     urg_node2_dir, 'launch', 'rt1_urg_node2.launch.py'
                 )]),
                 launch_arguments=lidar_launch_args.items()
-            )
+            ),
 
+            # Odometry Calculator Node
+            Node(
+                package='rt1_hardware',
+                executable='odometry_calculator_node',
+                name='odometry_calculator',
+                output='screen',
+                parameters=[odom_params],  # Use parameters from YAML
+                remappings=[(remap['from'], remap['to']) 
+                           for remap in params['/**']['ros__parameters']['remappings']]
+            )
         ],
         condition=UnlessCondition(LaunchConfiguration('use_sim'))
     )
