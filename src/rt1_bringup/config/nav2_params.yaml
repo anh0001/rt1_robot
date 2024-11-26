@@ -1,0 +1,201 @@
+# Nav2 Parameters Template for RT1 Robot
+# This template highlights key parameters that commonly need adjustment
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: False
+    global_frame: map               # Global coordinate frame
+    robot_base_frame: base_link     # Robot's base frame
+    odom_topic: /rt1/odom          # RT1's remapped odometry topic
+    # Path to default behavior tree xml
+    default_bt_xml_filename: "navigate_w_replanning_and_recovery.xml"
+
+controller_server:
+  ros__parameters:
+    use_sim_time: False
+    controller_frequency: 20.0      # How often to run the control loop (Hz)
+    
+    # Velocity thresholds for movement
+    # --------------------------------
+    min_x_velocity_threshold: 0.001 # Minimum velocity for moving forward
+    min_theta_velocity_threshold: 0.001 # Minimum velocity for rotation
+    
+    # Progress Checker Parameters
+    # --------------------------
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.3 # Minimum distance the robot must move
+      movement_time_allowance: 10.0 # Time allowed for movement
+    
+    # Goal Checker Parameters
+    # ----------------------
+    general_goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.15      # Distance tolerance for reaching goal (meters)
+      yaw_goal_tolerance: 0.15     # Yaw tolerance for reaching goal (radians)
+    
+    # DWB Local Planner Parameters (RT1 Specific)
+    # ------------------------------------------
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      
+      # Velocity Limits
+      # --------------
+      min_vel_x: -0.3              # Maximum reverse velocity (m/s)
+      max_vel_x: 0.3               # Maximum forward velocity (m/s)
+      min_vel_y: 0.0               # Should be 0 for non-holonomic robot
+      max_vel_y: 0.0               # Should be 0 for non-holonomic robot
+      max_vel_theta: 1.0           # Maximum rotational velocity (rad/s)
+      min_speed_xy: 0.0            # Minimum translational velocity
+      max_speed_xy: 0.3            # Maximum translational velocity
+      min_speed_theta: 0.0         # Minimum rotational velocity
+      
+      # Acceleration Limits
+      # ------------------
+      acc_lim_x: 1.0               # Forward acceleration limit (m/s^2)
+      acc_lim_y: 0.0               # Should be 0 for non-holonomic robot
+      acc_lim_theta: 2.0           # Rotational acceleration limit (rad/s^2)
+      decel_lim_x: -1.0            # Forward deceleration limit (m/s^2)
+      decel_lim_y: 0.0             # Should be 0 for non-holonomic robot
+      decel_lim_theta: -2.0        # Rotational deceleration limit (rad/s^2)
+      
+      # Trajectory Scoring Parameters
+      # ---------------------------
+      vx_samples: 20               # Number of forward velocity samples
+      vy_samples: 0                # Should be 0 for non-holonomic robot
+      vtheta_samples: 40           # Number of rotational velocity samples
+      sim_time: 1.5                # Time to forward simulate trajectories
+      
+      # Goal Tolerance
+      # -------------
+      xy_goal_tolerance: 0.15      # Distance tolerance for reaching goal
+      transform_tolerance: 0.2      # TF tolerance
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 5.0         # How often to update costmap (Hz)
+      publish_frequency: 2.0        # How often to publish costmap (Hz)
+      global_frame: odom
+      robot_base_frame: base_link
+      
+      # Local Costmap Parameters
+      # -----------------------
+      rolling_window: true
+      width: 3                      # Width of costmap (meters)
+      height: 3                     # Height of costmap (meters)
+      resolution: 0.05              # Resolution of costmap (meters/cell)
+      robot_radius: 0.21           # Radius of RT1 robot
+      
+      plugins: ["voxel_layer", "inflation_layer"]
+      
+      # Inflation Layer Parameters
+      # ------------------------
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 2.58   # Exponential rate at which inflation decreases
+        inflation_radius: 0.3       # Radius to inflate obstacles
+      
+      # Voxel Layer Parameters (for 3D obstacle detection)
+      # ------------------------------------------------
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        publish_voxel_map: True
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        max_obstacle_height: 0.6    # RT1's height consideration
+        
+        # Sensor Configuration
+        # -------------------
+        observation_sources: scan
+        scan:
+          topic: /scan                # RT1's Hokuyo LiDAR topic
+          max_obstacle_height: 0.6
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0     # Maximum range to raytrace obstacles
+          raytrace_min_range: 0.0     # Minimum range to raytrace obstacles
+          obstacle_max_range: 2.5     # Maximum range to mark obstacles
+          obstacle_min_range: 0.0     # Minimum range to mark obstacles
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link
+      robot_radius: 0.21            # RT1's radius
+      resolution: 0.05
+      
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      
+      # Inflation Parameters (same as local costmap)
+      # ------------------------------------------
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 2.58
+        inflation_radius: 0.3
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 20.0
+    use_sim_time: False
+    planner_plugins: ["GridBased"]
+    
+    # Global Path Planner Parameters
+    # ----------------------------
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.15              # Path planning tolerance
+      use_astar: false            # Use Dijkstra's algorithm
+      allow_unknown: true         # Allow planning through unknown space
+
+recoveries_server:
+  ros__parameters:
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    recovery_plugins: ["spin", "backup", "wait"]
+    
+    # Recovery Behavior Parameters
+    # --------------------------
+    spin:
+      plugin: "nav2_recoveries/Spin"
+    backup:
+      plugin: "nav2_recoveries/BackUp"
+    wait:
+      plugin: "nav2_recoveries/Wait"
+    
+    # Recovery Velocity Limits
+    # ----------------------
+    max_rotational_vel: 1.0        # Maximum rotation speed during recovery
+    min_rotational_vel: 0.3        # Minimum rotation speed during recovery
+    rotational_acc_lim: 2.0        # Rotational acceleration limit during recovery
+
+# Common parameters to adjust for RT1:
+# 1. Robot Size:
+#    - robot_radius in both costmaps
+#    - inflation_radius in both costmaps
+#
+# 2. Speed Limits:
+#    - min/max_vel_x in DWB parameters
+#    - max_vel_theta in DWB parameters
+#    - acc_lim_x and acc_lim_theta
+#
+# 3. Goal Tolerance:
+#    - xy_goal_tolerance
+#    - yaw_goal_tolerance
+#
+# 4. Sensor Configuration:
+#    - scan topic name
+#    - obstacle_max_range
+#    - raytrace_max_range
+#
+# 5. Recovery Behaviors:
+#    - max_rotational_vel
+#    - min_rotational_vel
+#    - rotational_acc_lim

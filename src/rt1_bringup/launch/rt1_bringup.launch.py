@@ -7,7 +7,7 @@ from launch.actions import (
 )
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch.event_handlers import OnProcessExit
 from ament_index_python.packages import get_package_share_directory
@@ -19,6 +19,7 @@ def generate_launch_description():
     bringup_dir = get_package_share_directory('rt1_bringup')
     description_dir = get_package_share_directory('rt1_description')
     urg_node2_dir = get_package_share_directory('urg_node2')
+    nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     
     # Load the main parameters file
     params_file = os.path.join(bringup_dir, 'config', 'rt1_params.yaml')
@@ -54,6 +55,22 @@ def generate_launch_description():
             'mode',
             default_value=launch_config['mode'],
             description='Operation mode: "teleop" or "sensor"'
+        ),
+        # Add Nav2 specific arguments
+        DeclareLaunchArgument(
+            'use_nav2',
+            default_value='true',
+            description='Start Nav2 navigation stack'
+        ),
+        DeclareLaunchArgument(
+            'map',
+            default_value=os.path.join(bringup_dir, 'maps', 'empty_map.yaml'),
+            description='Full path to map yaml file to load'
+        ),
+        DeclareLaunchArgument(
+            'params_file',
+            default_value=os.path.join(bringup_dir, 'config', 'nav2_params.yaml'),
+            description='Full path to the ROS2 parameters file to use for Nav2 nodes'
         )
     ]
     
@@ -102,7 +119,7 @@ def generate_launch_description():
                 executable='odometry_calculator_node',
                 name='odometry_calculator',
                 output='screen',
-                parameters=[odom_params],  # Use parameters from YAML
+                parameters=[odom_params],
                 remappings=[(remap['from'], remap['to']) 
                            for remap in params['/**']['ros__parameters']['remappings']]
             )
@@ -113,14 +130,6 @@ def generate_launch_description():
     # Simulation specific nodes
     sim_group = GroupAction(
         actions=[
-            # # Gazebo simulation
-            # IncludeLaunchDescription(
-            #     PythonLaunchDescriptionSource([
-            #         os.path.join(get_package_share_directory('gazebo_ros'), 
-            #                    'launch', 'gazebo.launch.py')
-            #     ])
-            # ),
-            
             # Spawn robot in Gazebo
             Node(
                 package='gazebo_ros',
@@ -147,6 +156,19 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_sim'))
     )
 
+    # Nav2 launch
+    nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(nav2_bringup_dir, 'launch', 'navigation_launch.py')
+        ]),
+        launch_arguments={
+            'use_sim_time': LaunchConfiguration('use_sim'),
+            'params_file': LaunchConfiguration('params_file'),
+            'map': LaunchConfiguration('map')
+        }.items(),
+        condition=IfCondition(LaunchConfiguration('use_nav2'))
+    )
+
     # Common nodes (used in both real and sim)
     common_group = GroupAction(
         actions=[
@@ -168,6 +190,22 @@ def generate_launch_description():
                 arguments=['-d', rviz_config],
                 output='screen',
                 condition=IfCondition(LaunchConfiguration('use_rviz'))
+            ),
+
+            # Nav2 lifecycle manager
+            Node(
+                package='nav2_lifecycle_manager',
+                executable='lifecycle_manager',
+                name='lifecycle_manager_navigation',
+                output='screen',
+                parameters=[{'use_sim_time': LaunchConfiguration('use_sim')},
+                          {'autostart': True},
+                          {'node_names': ['controller_server',
+                                        'planner_server',
+                                        'recoveries_server',
+                                        'bt_navigator',
+                                        'waypoint_follower']}],
+                condition=IfCondition(LaunchConfiguration('use_nav2'))
             )
         ]
     )
@@ -178,7 +216,8 @@ def generate_launch_description():
     # Add all node groups
     ld.add_action(description_launch)
     ld.add_action(real_hardware_group)
-    ld.add_action(sim_group)  # Restored simulation group
+    ld.add_action(sim_group)
+    ld.add_action(nav2_launch)  # Add Nav2 launch
     ld.add_action(common_group)
     
     return ld

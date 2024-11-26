@@ -4,7 +4,7 @@
     launch_config:
       use_sim: false
       use_rviz: false
-      use_slam: false
+      use_slam: true
       mode: "sensor"  # "sensor" or "teleop"
       
     # Hardware configuration
