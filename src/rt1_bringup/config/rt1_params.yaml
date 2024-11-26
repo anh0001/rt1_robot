@@ -59,18 +59,3 @@
       nav2_params: "nav2_params.yaml"    # Added: Path to Nav2 parameters
       map_dir: "maps"                    # Added: Directory for map files
       default_map: "empty_map.yaml"      # Added: Default map file name
-
-    # Added: Navigation configuration
-    navigation:
-      default_bt_xml: "navigate_w_replanning_and_recovery.xml"
-      global_frame: "map"
-      robot_base_frame: "base_link"
-      odom_topic: "/rt1/odom"
-      cmd_vel_topic: "/rt1/cmd_vel"
-      transform_tolerance: 0.2
-      max_vel_x: 0.3                     # RT1's max forward velocity
-      min_vel_x: -0.3                    # RT1's max reverse velocity
-      max_vel_theta: 1.0                 # RT1's max rotational velocity
-      min_vel_theta: -1.0                # RT1's min rotational velocity
-      robot_radius: 0.21                 # Based on wheel_separation/2
-      inflation_radius: 0.3              # Safe distance from obstacles</document_content>

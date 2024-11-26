@@ -170,7 +170,7 @@ def generate_launch_description():
                     'map': LaunchConfiguration('map')
                 }.items()
             ),
-            
+
             # Nav2 lifecycle manager
             Node(
                 package='nav2_lifecycle_manager',
