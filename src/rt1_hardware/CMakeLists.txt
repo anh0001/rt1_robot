@@ -48,6 +48,7 @@ ament_target_dependencies(odometry_calculator_node
   nav_msgs
   tf2
   tf2_ros
+  rosrt_rt1
 )
 
 # Declare the test_serial_comm executable

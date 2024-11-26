@@ -51,13 +51,6 @@
         to: "/rt1/cmd_vel"
       - from: "/odom"
         to: "/rt1/odom"
-      # Added: Odometry remappings
-      - from: "rt1/accel"
-        to: "robot/accel"
-      - from: "rt1/wrench"
-        to: "robot/wrench"
-      - from: "rt1/velocity"
-        to: "robot/velocity"
       
     # Path configurations
     paths:

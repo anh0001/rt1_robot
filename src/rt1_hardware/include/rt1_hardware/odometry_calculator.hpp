@@ -8,6 +8,7 @@
 #include <nav_msgs/msg/odometry.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2/LinearMath/Quaternion.h>
+#include "rosrt_rt1/msg/rt1_sensor.hpp"  // Add the custom message header
 
 class OdometryCalculator : public rclcpp::Node {
 public:
@@ -17,10 +18,8 @@ private:
     // Parameters
     double publish_rate_;  // Hz
     
-    // Subscribers
-    rclcpp::Subscription<geometry_msgs::msg::Accel>::SharedPtr accel_sub_;
-    rclcpp::Subscription<geometry_msgs::msg::Wrench>::SharedPtr wrench_sub_;
-    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr velocity_sub_;
+    // Single subscriber for combined sensor data
+    rclcpp::Subscription<rosrt_rt1::msg::Rt1Sensor>::SharedPtr sensor_sub_;
     
     // Publishers
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
@@ -41,13 +40,10 @@ private:
     double last_time_ = 0.0;
     
     // Message timestamp tracking
-    rclcpp::Time last_accel_time_;
-    rclcpp::Time last_velocity_time_;
+    rclcpp::Time last_sensor_time_;  // Single timestamp for all sensor data
     
-    // Callbacks
-    void accelCallback(const geometry_msgs::msg::Accel::SharedPtr msg);
-    void wrenchCallback(const geometry_msgs::msg::Wrench::SharedPtr msg);
-    void velocityCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
+    // Single callback for combined sensor data
+    void sensorCallback(const rosrt_rt1::msg::Rt1Sensor::SharedPtr msg);
     void timerCallback();
     
     // Helper functions

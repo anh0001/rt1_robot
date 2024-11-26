@@ -1,7 +1,7 @@
-// rt1_hardware/src/odometry_calculator.cpp
 #include "rt1_hardware/odometry_calculator.hpp"
 #include <tf2/LinearMath/Quaternion.h>
 #include <geometry_msgs/msg/transform_stamped.hpp>
+#include "rosrt_rt1/msg/rt1_sensor.hpp"  // Include the custom message header
 
 void OdometryCalculator::declareParameters()
 {
@@ -23,21 +23,12 @@ OdometryCalculator::OdometryCalculator()
     publish_rate_ = this->get_parameter("publish_rate").as_double();
     
     // Initialize message timestamps
-    last_accel_time_ = this->now();
-    last_velocity_time_ = this->now();
+    last_sensor_time_ = this->now();
     
-    // Initialize subscribers with larger queue sizes for 100Hz operation
-    accel_sub_ = create_subscription<geometry_msgs::msg::Accel>(
-        "rt1/accel", 30, 
-        std::bind(&OdometryCalculator::accelCallback, this, std::placeholders::_1));
-        
-    wrench_sub_ = create_subscription<geometry_msgs::msg::Wrench>(
-        "rt1/wrench", 30,
-        std::bind(&OdometryCalculator::wrenchCallback, this, std::placeholders::_1));
-        
-    velocity_sub_ = create_subscription<geometry_msgs::msg::Twist>(
-        "rt1/velocity", 30,
-        std::bind(&OdometryCalculator::velocityCallback, this, std::placeholders::_1));
+    // Initialize subscriber for the combined sensor message
+    sensor_sub_ = create_subscription<rosrt_rt1::msg::Rt1Sensor>(
+        "/rosrt_rt1", 30, 
+        std::bind(&OdometryCalculator::sensorCallback, this, std::placeholders::_1));
 
     // Initialize publisher with larger queue size
     odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("rt1/odom", 30);
@@ -56,24 +47,22 @@ OdometryCalculator::OdometryCalculator()
     last_time_ = this->now().seconds();
 }
 
-void OdometryCalculator::accelCallback(const geometry_msgs::msg::Accel::SharedPtr msg)
+void OdometryCalculator::sensorCallback(const rosrt_rt1::msg::Rt1Sensor::SharedPtr msg)
 {
-    ax_ = msg->linear.x;
-    ay_ = msg->linear.y;
-    last_accel_time_ = this->now();
-}
-
-void OdometryCalculator::wrenchCallback(const geometry_msgs::msg::Wrench::SharedPtr msg)
-{
-    // Use wrench data if needed for additional calculations
-}
-
-void OdometryCalculator::velocityCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
-{
-    vx_ = msg->linear.x;
-    vy_ = msg->linear.y;
-    vtheta_ = msg->angular.z;
-    last_velocity_time_ = this->now();
+    // Update acceleration values
+    ax_ = msg->accel.linear.x;
+    ay_ = msg->accel.linear.y;
+    
+    // Update velocity values
+    vx_ = msg->velocity.linear.x;
+    vy_ = msg->velocity.linear.y;
+    vtheta_ = msg->velocity.angular.z;
+    
+    // Store handle data if needed
+    // handle_force_x_ = msg->handle.force.x;
+    // handle_force_y_ = msg->handle.force.y;
+    
+    last_sensor_time_ = this->now();
 }
 
 void OdometryCalculator::updateOdometry()
@@ -85,14 +74,14 @@ void OdometryCalculator::updateOdometry()
     if (dt > 0.0 && dt < 0.1) {  // Ensure dt is positive and less than 100ms
         // Check data freshness (within last 100ms)
         auto now = this->now();
-        bool fresh_accel = (now - last_accel_time_).seconds() < 0.1;
-        bool fresh_velocity = (now - last_velocity_time_).seconds() < 0.1;
+        bool fresh_data = (now - last_sensor_time_).seconds() < 0.1;
         
-        if (!fresh_accel || !fresh_velocity) {
+        if (!fresh_data) {
             RCLCPP_WARN_THROTTLE(this->get_logger(), 
                                 *this->get_clock(),
                                 1000, // Warn every 1 second
                                 "Stale sensor data detected!");
+            return;
         }
         
         // Update position using velocity and acceleration
