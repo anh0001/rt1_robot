@@ -30,6 +30,13 @@ def generate_launch_description():
     launch_config = params['/**']['ros__parameters']['launch_config']
     lidar_params = params['/**']['ros__parameters']['hardware']['lidar']
     odom_params = params['/**']['ros__parameters']['hardware']['odometry']
+    paths_params = params['/**']['ros__parameters']['paths']
+    
+    # Get configuration paths
+    nav2_params_path = os.path.join(bringup_dir, 'config', paths_params['nav2_params'])
+    slam_params_file = os.path.join(bringup_dir, 'config', paths_params['slam_params'])
+    rviz_config = os.path.join(description_dir, 'rviz', paths_params['rviz_config'])
+    map_path = os.path.join(bringup_dir, paths_params['map_dir'], paths_params['default_map'])
     
     # Convert values to strings for launch arguments
     lidar_launch_args = {k: str(v) for k, v in lidar_params.items()}
@@ -52,33 +59,26 @@ def generate_launch_description():
             description='Start SLAM toolbox'
         ),
         DeclareLaunchArgument(
+            'use_nav2',
+            default_value=str(launch_config['use_nav2']).lower(),
+            description='Start Nav2 navigation stack'
+        ),
+        DeclareLaunchArgument(
             'mode',
             default_value=launch_config['mode'],
             description='Operation mode: "teleop" or "sensor"'
         ),
-        # Add Nav2 specific arguments
-        DeclareLaunchArgument(
-            'use_nav2',
-            default_value='true',
-            description='Start Nav2 navigation stack'
-        ),
         DeclareLaunchArgument(
             'map',
-            default_value=os.path.join(bringup_dir, 'maps', 'empty_map.yaml'),
+            default_value=map_path,
             description='Full path to map yaml file to load'
         ),
         DeclareLaunchArgument(
-            'params_file',
-            default_value=os.path.join(bringup_dir, 'config', 'nav2_params.yaml'),
-            description='Full path to the ROS2 parameters file to use for Nav2 nodes'
+            'nav2_params_file',
+            default_value=nav2_params_path,
+            description='Full path to the ROS2 parameters file for Nav2 nodes'
         )
     ]
-    
-    # Get path configurations
-    slam_params_file = os.path.join(bringup_dir, 'config', 
-                                   params['/**']['ros__parameters']['paths']['slam_params'])
-    rviz_config = os.path.join(description_dir, 'rviz', 
-                              params['/**']['ros__parameters']['paths']['rviz_config'])
 
     # Robot description launch
     description_launch = IncludeLaunchDescription(
@@ -156,16 +156,38 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_sim'))
     )
 
-    # Nav2 launch
-    nav2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(nav2_bringup_dir, 'launch', 'navigation_launch.py')
-        ]),
-        launch_arguments={
-            'use_sim_time': LaunchConfiguration('use_sim'),
-            'params_file': LaunchConfiguration('params_file'),
-            'map': LaunchConfiguration('map')
-        }.items(),
+    # Navigation specific nodes
+    navigation_group = GroupAction(
+        actions=[
+            # Nav2 bringup
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    os.path.join(nav2_bringup_dir, 'launch', 'navigation_launch.py')
+                ]),
+                launch_arguments={
+                    'use_sim_time': LaunchConfiguration('use_sim'),
+                    'params_file': LaunchConfiguration('nav2_params_file'),
+                    'map': LaunchConfiguration('map')
+                }.items()
+            ),
+            
+            # Nav2 lifecycle manager
+            Node(
+                package='nav2_lifecycle_manager',
+                executable='lifecycle_manager',
+                name='lifecycle_manager_navigation',
+                output='screen',
+                parameters=[{
+                    'use_sim_time': LaunchConfiguration('use_sim'),
+                    'autostart': True,
+                    'node_names': ['controller_server',
+                                'planner_server',
+                                'recoveries_server',
+                                'bt_navigator',
+                                'waypoint_follower']
+                }]
+            )
+        ],
         condition=IfCondition(LaunchConfiguration('use_nav2'))
     )
 
@@ -190,22 +212,6 @@ def generate_launch_description():
                 arguments=['-d', rviz_config],
                 output='screen',
                 condition=IfCondition(LaunchConfiguration('use_rviz'))
-            ),
-
-            # Nav2 lifecycle manager
-            Node(
-                package='nav2_lifecycle_manager',
-                executable='lifecycle_manager',
-                name='lifecycle_manager_navigation',
-                output='screen',
-                parameters=[{'use_sim_time': LaunchConfiguration('use_sim')},
-                          {'autostart': True},
-                          {'node_names': ['controller_server',
-                                        'planner_server',
-                                        'recoveries_server',
-                                        'bt_navigator',
-                                        'waypoint_follower']}],
-                condition=IfCondition(LaunchConfiguration('use_nav2'))
             )
         ]
     )
@@ -217,7 +223,7 @@ def generate_launch_description():
     ld.add_action(description_launch)
     ld.add_action(real_hardware_group)
     ld.add_action(sim_group)
-    ld.add_action(nav2_launch)  # Add Nav2 launch
+    ld.add_action(navigation_group)
     ld.add_action(common_group)
     
     return ld
