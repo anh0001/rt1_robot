@@ -36,8 +36,8 @@ class TeleopKeyboard(Node):
         cmd_vel_topic = self.get_parameter('cmd_vel_topic').value
         
         self.publisher = self.create_publisher(Twist, cmd_vel_topic, 10)
-        self.linear_speed = 0.5
-        self.angular_speed = 1.0
+        self.linear_speed = 0.2
+        self.angular_speed = 0.5
         self.x = 0.0
         self.th = 0.0
         
